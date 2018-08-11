@@ -12,6 +12,10 @@ documentation = "https://docs.rs/leb128"
 repository = "https://github.com/gimli-rs/leb128"
 
 [dependencies]
+bytes = "0.4.9"
 
 [features]
+default = ["std"]
+std = []
+use-bytes = []
 nightly = []

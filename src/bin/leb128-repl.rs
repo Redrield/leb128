@@ -2,6 +2,8 @@ extern crate leb128;
 
 use std::io::{self, BufRead, Write};
 use std::str;
+use leb128::read::LEB128Read;
+use leb128::write::LEB128Write;
 
 fn display(bytes: &[u8]) -> String {
     let mut s = vec![];
@@ -63,7 +65,7 @@ base-10, hex, and binary.
             .and_then(|s| s.trim().parse().ok())
             .and_then(|n: u64| {
                 let mut s = vec![];
-                leb128::write::unsigned(&mut s, n).ok()?;
+                s.write_unsigned(n).ok()?;
                 Some(display(&s))
             })
             .unwrap_or_else(|| "error\n".into());
@@ -78,7 +80,7 @@ base-10, hex, and binary.
             .and_then(|s| s.trim().parse().ok())
             .and_then(|n: i64| {
                 let mut s = vec![];
-                leb128::write::signed(&mut s, n).ok()?;
+                s.write_signed(n).ok()?;
                 Some(display(&s))
             })
             .unwrap_or_else(|| "error\n".into());
