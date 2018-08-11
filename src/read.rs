@@ -8,11 +8,11 @@ use bytes::Buf;
 pub trait LEB128Read {
     /// Read a signed LEB128 number from the given `std::io::Read`able and
     /// return it or an error if reading failed.
-    fn read_signed(&mut self) -> Result<i64, Error>;
+    fn read_signed(&mut self) -> Result<(i64, usize), Error>;
 
     /// Read an unsigned LEB128 number from the given `std::io::Read`able and
     /// return it or an error if reading failed.
-    fn read_unsigned(&mut self) -> Result<u64, Error>;
+    fn read_unsigned(&mut self) -> Result<(u64, usize), Error>;
 }
 
 /// An enumeration of the possible errors that can occur when reading a
@@ -59,15 +59,17 @@ impl ::std::error::Error for Error {
 impl<R> LEB128Read for R
     where R: io::Read
 {
-    fn read_signed(&mut self) -> Result<i64, Error> {
+    fn read_signed(&mut self) -> Result<(i64, usize), Error> {
         let mut result = 0;
         let mut shift = 0;
         let size = 64;
         let mut byte;
+        let mut bytes_read = 0;
 
         loop {
             let mut buf = [0];
             self.read_exact(&mut buf)?;
+            bytes_read += 1;
 
             byte = buf[0];
             if shift == 63 && byte != 0x00 && byte != 0x7f {
@@ -88,16 +90,18 @@ impl<R> LEB128Read for R
             result |= !0 << shift;
         }
 
-        Ok(result)
+        Ok((result, bytes_read))
     }
 
-    fn read_unsigned(&mut self) -> Result<u64, Error> {
+    fn read_unsigned(&mut self) -> Result<(u64, usize), Error> {
         let mut result = 0;
         let mut shift = 0;
+        let mut bytes_read = 0;
 
         loop {
             let mut buf = [0];
             self.read_exact(&mut buf)?;
+            bytes_read += 1;
 
             if shift == 63 && buf[0] != 0x00 && buf[0] != 0x01 {
                 return Err(Error::Overflow);
@@ -107,7 +111,7 @@ impl<R> LEB128Read for R
             result |= low_bits << shift;
 
             if buf[0] & CONTINUATION_BIT == 0 {
-                return Ok(result);
+                return Ok((result, bytes_read));
             }
 
             shift += 7;
@@ -119,14 +123,16 @@ impl<R> LEB128Read for R
 impl<R> LEB128Read for R
     where R: Buf
 {
-    fn read_signed(&mut self) -> Result<i64, Error> {
+    fn read_signed(&mut self) -> Result<(i64, usize), Error> {
         let mut result = 0;
         let mut shift = 0;
         let size = 64;
         let mut byte;
+        let mut bytes_read = 0;
 
         loop {
             byte = self.get_u8();
+            bytes_read += 1;
             if shift == 63 && byte != 0x00 && byte != 0x7f {
                 return Err(Error::Overflow);
             }
@@ -145,15 +151,17 @@ impl<R> LEB128Read for R
             result |= !0 << shift;
         }
 
-        Ok(result)
+        Ok((result, bytes_read))
     }
 
-    fn read_unsigned(&mut self) -> Result<u64, Error> {
+    fn read_unsigned(&mut self) -> Result<(u64, usize), Error> {
         let mut result = 0;
         let mut shift = 0;
+        let mut bytes_read = 0;
 
         loop {
             let byte = self.get_u8();
+            bytes_read += 1;
 
             if shift == 63 && byte != 0x00 && byte != 0x01 {
                 return Err(Error::Overflow);
@@ -163,7 +171,7 @@ impl<R> LEB128Read for R
             result |= low_bits << shift;
 
             if byte & CONTINUATION_BIT == 0 {
-                return Ok(result);
+                return Ok((result, bytes_read));
             }
 
             shift += 7;
