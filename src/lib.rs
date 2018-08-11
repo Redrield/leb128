@@ -71,6 +71,9 @@ pub mod read;
 /// A module for writing integers encoded as LEB128.
 pub mod write;
 
+pub use self::read::LEB128Read;
+pub use self::write::LEB128Write;
+
 #[cfg(all(test, feature = "use-bytes"))]
 mod tests_bytes;
 
