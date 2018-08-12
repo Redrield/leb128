@@ -1,4 +1,4 @@
-extern crate leb128;
+extern crate nt_leb128 as leb128;
 
 use std::io::{self, BufRead, Write};
 use std::str;

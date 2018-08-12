@@ -1,15 +1,15 @@
 [package]
-authors = ["Nick Fitzgerald <fitzgen@gmail.com>", "Philip Craig <philipjcraig@gmail.com>"]
-name = "leb128"
-version = "0.2.3"
+authors = ["Nick Fitzgerald <fitzgen@gmail.com>", "Philip Craig <philipjcraig@gmail.com>", "Rhys Kenwell <redrield@gmail.com>"]
+name = "nt-leb128"
+version = "0.2.4"
 
-description = "Read and write DWARF's \"Little Endian Base 128\" (LEB128) variable length integer encoding."
+description = "Read and write DWARF's \"Little Endian Base 128\" (LEB128) variable length integer encoding. (With modifications used for nt-rs)"
 
 license = "Apache-2.0/MIT"
 readme = "./README.md"
 keywords = ["LEB128", "DWARF", "variable", "length", "encoding"]
-documentation = "https://docs.rs/leb128"
-repository = "https://github.com/gimli-rs/leb128"
+documentation = "https://docs.rs/nt-leb128"
+repository = "https://github.com/Redrield/leb128"
 
 [dependencies]
 bytes = "0.4.9"
