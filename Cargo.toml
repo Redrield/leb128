@@ -1,7 +1,8 @@
 [package]
 authors = ["Nick Fitzgerald <fitzgen@gmail.com>", "Philip Craig <philipjcraig@gmail.com>", "Rhys Kenwell <redrield@gmail.com>"]
 name = "nt-leb128"
-version = "0.2.4"
+version = "0.3.0"
+edition = "2018"
 
 description = "Read and write DWARF's \"Little Endian Base 128\" (LEB128) variable length integer encoding. (With modifications used for nt-rs)"
 
@@ -12,10 +13,4 @@ documentation = "https://docs.rs/nt-leb128"
 repository = "https://github.com/Redrield/leb128"
 
 [dependencies]
-bytes = "0.4.9"
-
-[features]
-default = ["std"]
-std = []
-use-bytes = []
-nightly = []
+bytes = "0.5.2"
